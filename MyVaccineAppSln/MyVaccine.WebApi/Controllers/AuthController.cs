@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,24 @@ public class AuthController : ControllerBase
         {
             return Unauthorized(response);
         }
+    }
+
+    [Authorize]
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var claimsIdentity = HttpContext.User.Identity as ClaimsIdentity;
+        var response = await _userService.RefreshToken(claimsIdentity.Name);
+        if (response.IsSuccess)
+        {
+            return Ok(response);
+        }
+        else
+        {
+            return Unauthorized(response);
+        }
+
+
     }
 }
 

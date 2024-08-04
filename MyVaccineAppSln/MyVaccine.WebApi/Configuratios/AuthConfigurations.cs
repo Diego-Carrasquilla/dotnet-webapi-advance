@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MyVaccine.WebApi.Literals;
 using MyVaccine.WebApi.Models;
+using System.Text;
 
 namespace MyVaccine.WebApi.Configuratios
 {
@@ -37,10 +39,10 @@ namespace MyVaccine.WebApi.Configuratios
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
-                    ValidateIssuerSigningKey = false,
+                    ValidateIssuerSigningKey = true,
                     //ValidIssuer = "tu_issuer",
                     //ValidAudience = "tu_audience",
-                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("tu_clave_secreta")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(MyVaccineLiterals.JWT_KEY))),
                     //ClockSkew = TimeSpan.Zero // Evita un desfase de tiempo (opcional)
                 };
             });
