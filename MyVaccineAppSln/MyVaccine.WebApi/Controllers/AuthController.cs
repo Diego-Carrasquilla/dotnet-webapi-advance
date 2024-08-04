@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using MyVaccine.WebApi.Dtos;
 using MyVaccine.WebApi.Literals;
 using MyVaccine.WebApi.Repositories.Contracts;
+using MyVaccine.WebApi.Services.Contracts;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,58 +17,40 @@ namespace MyVaccine.WebApi.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
 
-    public AuthController(UserManager<IdentityUser> userManager, IUserRepository userRepository)
+    public AuthController(UserManager<IdentityUser> userManager, IUserService userService)
     {
-        _userManager = userManager;
-        _userRepository = userRepository;
+        _userService = userService;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto model)
     {
-
-        var result = await _userRepository.AddUser(model);
-        //if (!result.Succeeded)
-       // {
-         //   return BadRequest(result.Errors);
-        //}
-
-        return Ok("User registered successfully");
+        var response = await _userService.AddUserAsync(model);
+        if (response != null && response.IsSuccess)
+        {
+            return Ok(response);
+        }
+        else
+        {
+            return BadRequest(response);
+        }
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
     {
-        var user = await _userManager.FindByNameAsync(model.Username);
-
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        var response = await _userService.Login(model);
+        if (response != null && response.IsSuccess)
         {
-            var claims = new[]
-            {
-                    new Claim(ClaimTypes.Name, user.UserName)//atributos para el token
-
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(MyVaccineLiterals.JWT_KEY)));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                //issuer: _configuration["JwtIssuer"],
-                //audience: _configuration["JwtAudience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(15),
-                signingCredentials: creds
-            );
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+            return Ok(response);
         }
-
-        return Unauthorized();
+        else
+        {
+            return Unauthorized(response);
+        }
     }
 }
+
+        
+
