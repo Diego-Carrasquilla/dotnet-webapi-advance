@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.SetDatabaseConfiguration();
 builder.Services.SetMyyVaccineAuthConfiguration();
+builder.Services.SetDependencyInjection();
 var app = builder.Build();
 
 
