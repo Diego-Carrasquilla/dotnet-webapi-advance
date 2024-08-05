@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyVaccine.WebApi.Models
 {
-    public class Dependent
+    public class Dependent : BaseTable
     {
         [Key]//saltaba un error porque no tenia una "primary key" definida, asi lo solucione
         public int DependId { get; set; }
