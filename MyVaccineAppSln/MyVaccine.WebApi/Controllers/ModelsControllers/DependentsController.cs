@@ -7,7 +7,7 @@ using MyVaccine.WebApi.Dtos.Dependent;
 using MyVaccine.WebApi.Models;
 using MyVaccine.WebApi.Services.Contracts;
 
-namespace MyVaccine.WebApi.Controllers;
+namespace MyVaccine.WebApi.Controllers.ModelsControllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
