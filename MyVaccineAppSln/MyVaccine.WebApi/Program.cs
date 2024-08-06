@@ -1,41 +1,50 @@
-using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
 using MyVaccine.WebApi.Configuratios;
-using MyVaccine.WebApi.Literals;
-using MyVaccine.WebApi.Models;
 using MyVaccine.WebApi.Services;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Añadir controladores y configuración de FluentValidation
+builder.Services.AddControllers().AddFluentValidation(fv =>
+{
+    fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+});
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configuración de Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configuración de la base de datos
 builder.Services.SetDatabaseConfiguration();
+
+// Configuración de autenticación y autorización
 builder.Services.SetMyyVaccineAuthConfiguration();
+
+// Inyección de dependencias
 builder.Services.SetDependencyInjection();
+
+// Configuración de AutoMapper
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+// Servicios adicionales (solo para pruebas)
 builder.Services.AddScoped<IGuidGeneratorScope, GuidServiceScope>();
 builder.Services.AddTransient<IGuidGeneratorTrasient, GuidServiceTransient>();
 builder.Services.AddSingleton<IGuidGeneratorSingleton, GuidServiceSingleton>();
 builder.Services.AddScoped<IGuidGeneratorDeep, GuidGeneratorDeep>();
 
-builder.Services.AddControllers();
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
