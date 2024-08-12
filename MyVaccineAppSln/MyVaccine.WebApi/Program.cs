@@ -1,12 +1,11 @@
 using FluentValidation.AspNetCore;
-using MyVaccine.WebApi.Configurations;
-using MyVaccine.WebApi.Configurations.AutoMapperProfiles;
 using MyVaccine.WebApi.Configuratios;
 using MyVaccine.WebApi.Repositories.Contracts;
 using MyVaccine.WebApi.Repositories.Implementations;
 using MyVaccine.WebApi.Repositories.Interfaces;
 using MyVaccine.WebApi.Services;
 using MyVaccine.WebApi.Services.Contracts;
+using MyVaccine.WebApi.Services.Contracts.MyVaccine.WebApi.Services.Contracts;
 using MyVaccine.WebApi.Services.Implementations;
 using System.Reflection;
 
@@ -40,9 +39,26 @@ builder.Services.AddTransient<IGuidGeneratorTrasient, GuidServiceTransient>();
 builder.Services.AddSingleton<IGuidGeneratorSingleton, GuidServiceSingleton>();
 builder.Services.AddScoped<IGuidGeneratorDeep, GuidGeneratorDeep>();
 
-// Inyección de dependencias específicas para Allergy
+// Inyección de dependencias para Allergy
 builder.Services.AddScoped<IAllergyRepository, AllergyRepository>();
 builder.Services.AddScoped<IAllergyService, AllergyService>();
+
+// Inyección de dependencias para FamilyGroup
+builder.Services.AddScoped<IFamilyGroupRepository, FamilyGroupRepository>();
+builder.Services.AddScoped<IFamilyGroupService, FamilyGroupService>();
+
+// Inyección de dependencias para VaccineRecord
+builder.Services.AddScoped<IVaccineRecordRepository, VaccineRecordRepository>();
+builder.Services.AddScoped<IVaccineRecordService, VaccineRecordService>();
+
+// Inyección de dependencias para Vaccine
+builder.Services.AddScoped<IVaccineRepository, VaccineRepository>();
+builder.Services.AddScoped<IVaccineService, VaccineService>();
+
+// Inyección de dependencias para Vaccine Category
+builder.Services.AddScoped<IVaccineCategoryRepository, VaccineCategoryRepository>();
+builder.Services.AddScoped<IVaccineCategoryService, VaccineCategoryService>();
+
 
 var app = builder.Build();
 

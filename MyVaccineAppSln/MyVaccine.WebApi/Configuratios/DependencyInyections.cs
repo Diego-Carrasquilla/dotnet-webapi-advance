@@ -13,7 +13,7 @@ namespace MyVaccine.WebApi.Configuratios
         public static IServiceCollection SetDependencyInjection(this IServiceCollection services)
         {
             #region Repositories Injection
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, userRepository>();
             services.AddScoped<IBaseRepository<Dependent>, BaseRepository<Dependent>>();
             services.AddScoped<IAllergyRepository, AllergyRepository>(); // Agregar AllergyRepository
 

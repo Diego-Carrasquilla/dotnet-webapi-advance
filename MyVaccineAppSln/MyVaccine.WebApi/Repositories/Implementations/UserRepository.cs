@@ -6,11 +6,11 @@ using System.Transactions;
 
 namespace MyVaccine.WebApi.Repositories.Implementations
 {
-    public class UserRepository : BaseRepository<User>, IUserRepository
+    public class userRepository : BaseRepository<User>, IUserRepository
     {
         private readonly MyVaccineAppDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        public UserRepository(MyVaccineAppDbContext context, UserManager<IdentityUser> userManager): base(context) 
+        public userRepository(MyVaccineAppDbContext context, UserManager<IdentityUser> userManager): base(context) 
         {
             _context = context;
             _userManager = userManager;
@@ -43,6 +43,11 @@ namespace MyVaccine.WebApi.Repositories.Implementations
                 scope.Complete();
             }
             return response;
+        }
+
+        public async Task<User> GetById(int id)
+        {
+            return await _context.Users.FindAsync(id);
         }
 
         //var user = new ApplicationUser

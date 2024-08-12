@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyVaccine.WebApi.Dtos;
+using MyVaccine.WebApi.Dtos.Models_Dtos.Allergies;
 using MyVaccine.WebApi.Models;
 using MyVaccine.WebApi.Services.Contracts;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyVaccine.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AllergiesController : ControllerBase
@@ -18,6 +21,8 @@ namespace MyVaccine.WebApi.Controllers
             _service = service;
         }
 
+        //retorna Allergy segun su ID
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -25,7 +30,7 @@ namespace MyVaccine.WebApi.Controllers
             if (result == null)
                 return NotFound();
 
-            var allergyDto = new AllergyDto
+            var allergyDto = new AllergyRequestDto
             {
                 AllergyId = result.AllergyId,
                 Name = result.Name,
@@ -35,11 +40,12 @@ namespace MyVaccine.WebApi.Controllers
             return Ok(allergyDto);
         }
 
+        // GET: Obtiene todos las alergias
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var result = await _service.GetAll();
-            var allergyDtos = result.Select(allergy => new AllergyDto
+            var allergyDtos = result.Select(allergy => new AllergyRequestDto
             {
                 AllergyId = allergy.AllergyId,
                 Name = allergy.Name,
@@ -48,9 +54,9 @@ namespace MyVaccine.WebApi.Controllers
 
             return Ok(allergyDtos);
         }
-
+        // POST: Crea una nueva Alergia
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AllergyDto allergyDto)
+        public async Task<IActionResult> Create([FromBody] AllergyRequestDto allergyDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -63,7 +69,7 @@ namespace MyVaccine.WebApi.Controllers
 
             var createdAllergy = await _service.Add(allergy);
 
-            var createdAllergyDto = new AllergyDto
+            var createdAllergyDto = new AllergyResponseDto
             {
                 AllergyId = createdAllergy.AllergyId,
                 Name = createdAllergy.Name,
@@ -72,9 +78,9 @@ namespace MyVaccine.WebApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = createdAllergyDto.AllergyId }, createdAllergyDto);
         }
-
+        // PUT: Actualiza una alergia
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] AllergyDto allergyDto)
+        public async Task<IActionResult> Update(int id, [FromBody] AllergyRequestDto allergyDto)
         {
             if (id != allergyDto.AllergyId)
                 return BadRequest("ID mismatch.");
@@ -89,7 +95,7 @@ namespace MyVaccine.WebApi.Controllers
             await _service.Update(existingAllergy);
             return NoContent();
         }
-
+        //DELETE: elimina Una alergia
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

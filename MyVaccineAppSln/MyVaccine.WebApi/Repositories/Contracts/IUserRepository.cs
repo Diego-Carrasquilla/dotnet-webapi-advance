@@ -7,5 +7,7 @@ namespace MyVaccine.WebApi.Repositories.Contracts
     public interface IUserRepository : IBaseRepository<User>
     {
         Task<IdentityResult> AddUser(RegisterRequestDto request);
+        Task<User> GetById(int id); 
+
     }
 }

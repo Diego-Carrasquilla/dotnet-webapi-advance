@@ -15,8 +15,8 @@ namespace MyVaccine.WebApi.Models;
         public DbSet<User> Users { get; set; }
         public DbSet<Dependent> Dependents { get; set; }
         public DbSet<VaccineCategory> VaccineCategories { get; set; }
-        public DbSet<Vaccine> vaccines { get; set; }
-        public DbSet<VaccineRecord> vaccinesRecords { get; set; }
+        public DbSet<Vaccine> Vaccines { get; set; }
+        public DbSet<VaccineRecord> VaccineRecords { get; set; }
         public DbSet<Allergy> Allergies { get; set; }
         public DbSet<FamilyGroup> FamilyGroups { get; set; }
 
@@ -71,6 +71,7 @@ namespace MyVaccine.WebApi.Models;
 
         modelBuilder.Entity<VaccineRecord>(entity =>
         {
+            entity.ToTable("vaccinesRecords");
             entity.Property(vr => vr.AdministeredLocation)
                 .HasMaxLength(255);
 
@@ -111,8 +112,5 @@ namespace MyVaccine.WebApi.Models;
                 .HasMaxLength(255);
         });
     }
-
-
-
 }
 
